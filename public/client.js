@@ -1,10 +1,9 @@
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 
-let scene, camera, renderer, skyboxGeo, skybox, controls, myReq;
+let scene, camera, renderer, box, mesh, controls;
 let zoomOut = false;
-let autoRotate = true;
-let skyboxImage = "room";
+let meshImgName = "room";
 
 function createPathStrings(filename) {
   const basePath = "./images/";
@@ -18,14 +17,13 @@ function createPathStrings(filename) {
   return pathStings;
 }
 
-function createMaterialArray(filename) {
-  const skyboxImagepaths = createPathStrings(filename);
-  const materialArray = skyboxImagepaths.map((image) => {
+function createMaterials(filename) {
+  const paths = createPathStrings(filename);
+  const materials = paths.map((image) => {
     let texture = new THREE.TextureLoader().load(image);
-
     return new THREE.MeshBasicMaterial({ map: texture, side: THREE.BackSide });
   });
-  return materialArray;
+  return materials;
 }
 
 function init() {
@@ -43,12 +41,12 @@ function init() {
   renderer.domElement.id = "canvas";
   document.body.appendChild(renderer.domElement);
 
-  const materialArray = createMaterialArray(skyboxImage);
+  const materials = createMaterials(meshImgName);
 
-  skyboxGeo = new THREE.BoxGeometry(10000, 10000, 10000);
-  skybox = new THREE.Mesh(skyboxGeo, materialArray);
+  box = new THREE.BoxGeometry(10000, 10000, 10000);
+  mesh = new THREE.Mesh(box, materials);
 
-  scene.add(skybox);
+  scene.add(mesh);
 
   controls = new OrbitControls(camera, renderer.domElement);
   controls.enabled = true;
@@ -68,20 +66,9 @@ function onWindowResize() {
 }
 
 function animate() {
-  controls.autoRotate = autoRotate;
-
-  if (controls.maxDistance == 1500 && zoomOut) {
-    controls.maxDistance = 20000;
-    camera.position.z = 20000;
-  } else if (controls.maxDistance == 20000 && !zoomOut) {
-    console.log("called");
-    controls.maxDistance = 1500;
-    camera.position.z = 2000;
-  }
-
   controls.update();
   renderer.render(scene, camera);
-  myReq = window.requestAnimationFrame(animate);
+  window.requestAnimationFrame(animate);
 }
 
 init();
