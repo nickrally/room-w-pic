@@ -34,7 +34,7 @@ function init() {
     45,
     30000
   );
-  camera.position.set(1200, -250, 2000);
+  camera.position.set(2500, 1200, 2000); //y used to be -250 looks up, 1000 looks down & more floor
 
   renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
   renderer.setSize(window.innerWidth, window.innerHeight);
@@ -50,10 +50,10 @@ function init() {
 
   controls = new OrbitControls(camera, renderer.domElement);
   controls.enabled = true;
-  controls.minDistance = 700;
-  controls.maxDistance = 1500;
-  controls.autoRotate = true;
-  controls.autoRotateSpeed = 1.0;
+  controls.minDistance = 500;   //zoom in limit (walk closer to picture)
+  controls.maxDistance = 6000;  //zoom out limit (walk back from picture)
+  controls.autoRotate = false;
+  controls.autoRotateSpeed = 2.0;
 
   window.addEventListener("resize", onWindowResize, false);
   animate();
